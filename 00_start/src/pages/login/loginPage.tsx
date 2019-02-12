@@ -10,7 +10,7 @@ import { isValidLogin } from "../../api/login";
 import { NotificationComponent } from "../../common";
 import { LoginFormErrors, createDefaultLoginFormErrors } from "./viewmodel";
 import { loginFormValidation } from "./loginValidations";
-import { SessionContext, withSessionContext } from "../../common";
+import { SessionContext } from "../../common";
 
 // https://material-ui.com/guides/typescript/
 const styles = theme =>
@@ -47,7 +47,6 @@ function useLogin() {
 }
 
 interface Props extends RouteComponentProps, WithStyles<typeof styles> {
-  updateLogin: (value) => void;
 }
 
 const LoginPageInner = (props: Props) => {
@@ -60,11 +59,13 @@ const LoginPageInner = (props: Props) => {
     setLoginFormErrors
   } = useLogin();
 
+  const loginContext = React.useContext(SessionContext);
+
   const onLogin = () => {
     loginFormValidation.validateForm(loginInfo).then(formValidationResult => {
       if (formValidationResult.succeeded) {
         if (isValidLogin(loginInfo)) {
-          props.updateLogin(loginInfo.login);
+          loginContext.updateLogin(loginInfo.login);
           props.history.push("/pageB");
         } else {
           setShowLoginFailedMessage(true);
@@ -190,6 +191,4 @@ class LoginPageInner extends React.Component<Props, State> {
 }
 */
 
-export const LoginPage = withSessionContext(
-  withStyles(styles)(withRouter<Props>(LoginPageInner))
-);
+export const LoginPage = withStyles(styles)(withRouter<Props>(LoginPageInner));
