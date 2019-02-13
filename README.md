@@ -29,7 +29,7 @@ npm install react-i18next i18next --save
 
 - Create a new file _i18n.js_ containing the following content.
 
-_./src/i18n.js_
+_./src/i18n.ts_
 
 ```typescript
 import i18n from "i18next";
@@ -40,7 +40,18 @@ import { initReactI18next } from "react-i18next";
 const resources = {
   en: {
     translation: {
-      "Welcome to React": "Welcome to React and react-i18next"
+      login: "Login",
+      "Invalid login or password, please type again":
+        "Invalid login or password, please type again",
+        "error, review the fields": "error, review the fields",
+    }
+  },
+  es: {
+    translation: {
+      login: "Introduzca credenciales",
+      "Invalid login or password, please type again":
+        "Usuario o clave no validos, porfavor intentelo de nuevo",
+        "error, review the fields": "Error, revise los campos por favor",
     }
   }
 };
@@ -59,4 +70,82 @@ i18n
   });
 
 export default i18n;
+```
+
+The interesting part here is by i18n.use(initReactI18next) we pass the i18n instance to react-i18next which will make it available for all the components via the context api.
+
+Now let's import this fail in our _main.tsx_
+
+_./src/main.tsx_
+
+```diff
+import * as React from "react";
+import { withStyles, createStyles, WithStyles } from "@material-ui/core/styles";
++ import './i18n';
+```
+
+- Let's start translating the heading of the login panel, to do that
+  we will make use of a _hook_ that i18n provides.
+
+_./src/pages/login/loginPage.tsx_
+
+```diff
+// (...)
++ import { useTranslation } from 'react-i18next';
+
+// (...)
+
+const LoginPageInner = (props: Props) => {
++  const { t, i18n } = useTranslation();
+  const { loginInfo, setLoginInfo } = useLogin();
+
+// (...)
+
+  return (
+    <>
+      <Card className={classes.card}>
+-        <CardHeader title="Login" />
++        <CardHeader title={t('login')} />
+
+        <CardContent>
+          <LoginForm
+            onLogin={onLogin}
+            onUpdateField={onUpdateLoginField}
+            loginInfo={loginInfo}
+            loginFormErrors={loginFormErrors}
+          />
+        </CardContent>
+      </Card>
+      <NotificationComponent
+-        message="Invalid login or password, please type again"
++        message={t('Invalid login or password, please type again')}
+        show={showLoginFailedMessage}
+        onClose={() => setShowLoginFailedMessage(false)}
+      />
+    </>
+  );
+};
+```
+
+- So far so good, let's check now how can we add multilanguage support to a literal that
+  is injected via javascript.
+
+_./src/pages/login/loginPage.tsx_
+
+```diff
+  const onLogin = () => {
+    loginFormValidation.validateForm(loginInfo).then(formValidationResult => {
+      if (formValidationResult.succeeded) {
+        if (isValidLogin(loginInfo)) {
+          loginContext.updateLogin(loginInfo.login);
+          props.history.push("/pageB");
+        } else {
+          setShowLoginFailedMessage(true);
+        }
+      } else {
+-        alert("error, review the fields");
++         alert(t("error, review the fields");
+      }
+    });
+  };
 ```

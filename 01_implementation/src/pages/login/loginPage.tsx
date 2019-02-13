@@ -10,7 +10,8 @@ import { isValidLogin } from "../../api/login";
 import { NotificationComponent } from "../../common";
 import { LoginFormErrors, createDefaultLoginFormErrors } from "./viewmodel";
 import { loginFormValidation } from "./loginValidations";
-import { SessionContext, withSessionContext } from "../../common";
+import { SessionContext } from "../../common";
+import { useTranslation } from "react-i18next";
 
 // https://material-ui.com/guides/typescript/
 const styles = theme =>
@@ -21,89 +22,99 @@ const styles = theme =>
     }
   });
 
-interface State {
-  loginInfo: LoginEntity;
-  showLoginFailedMsg: boolean;
-  loginFormErrors: LoginFormErrors;
+function useLogin() {
+  const [loginInfo, setLoginInfo] = React.useState(createEmptyLogin());
+
+  return {
+    loginInfo,
+    setLoginInfo
+  };
 }
 
-interface Props extends RouteComponentProps, WithStyles<typeof styles> {
-  updateLogin: (value) => void;
+function useErrorHandling() {
+  const [showLoginFailedMessage, setShowLoginFailedMessage] = React.useState(
+    false
+  );
+  const [loginFormErrors, setLoginFormErrors] = React.useState(
+    createDefaultLoginFormErrors()
+  );
+
+  return {
+    showLoginFailedMessage,
+    setShowLoginFailedMessage,
+    loginFormErrors,
+    setLoginFormErrors
+  };
 }
 
-class LoginPageInner extends React.Component<Props, State> {
-  constructor(props) {
-    super(props);
+interface Props extends RouteComponentProps, WithStyles<typeof styles> {}
 
-    this.state = {
-      loginInfo: createEmptyLogin(),
-      showLoginFailedMsg: false,
-      loginFormErrors: createDefaultLoginFormErrors()
-    };
-  }
+const LoginPageInner = (props: Props) => {
+  const { t, i18n } = useTranslation();
+  const { loginInfo, setLoginInfo } = useLogin();
 
-  onLogin = () => {
-    loginFormValidation
-      .validateForm(this.state.loginInfo)
-      .then(formValidatinResult => {
-        if (formValidatinResult.succeeded) {
-          if (isValidLogin(this.state.loginInfo)) {
-            this.props.updateLogin(this.state.loginInfo.login);
-            this.props.history.push("/pageB");
-          } else {
-            this.setState({ showLoginFailedMsg: true });
-          }
+  const {
+    showLoginFailedMessage,
+    setShowLoginFailedMessage,
+    loginFormErrors,
+    setLoginFormErrors
+  } = useErrorHandling();
+
+  const loginContext = React.useContext(SessionContext);
+
+  const onLogin = () => {
+    loginFormValidation.validateForm(loginInfo).then(formValidationResult => {
+      if (formValidationResult.succeeded) {
+        if (isValidLogin(loginInfo)) {
+          loginContext.updateLogin(loginInfo.login);
+          props.history.push("/pageB");
         } else {
-          alert("error, review the fields");
+          setShowLoginFailedMessage(true);
         }
-      });
+      } else {
+        alert(t('error, review the fields'));
+      }
+    });
   };
 
-  onUpdateLoginField = (name: string, value) => {
-    this.setState({
-      loginInfo: {
-        ...this.state.loginInfo,
-        [name]: value
-      }
+  const onUpdateLoginField = (name: string, value) => {
+    setLoginInfo({
+      ...loginInfo,
+      [name]: value
     });
 
     loginFormValidation
-      .validateField(this.state.loginInfo, name, value)
+      .validateField(loginInfo, name, value)
       .then(fieldValidationResult => {
-        this.setState({
-          loginFormErrors: {
-            ...this.state.loginFormErrors,
-            [name]: fieldValidationResult
-          }
+        setLoginFormErrors({
+          ...loginFormErrors,
+          [name]: fieldValidationResult
         });
       });
   };
 
-  render() {
-    const { classes } = this.props;
-    return (
-      <>
-        <Card className={classes.card}>
-          <CardHeader title="Login" />
-          <CardContent>
-            <LoginForm
-              onLogin={this.onLogin}
-              onUpdateField={this.onUpdateLoginField}
-              loginInfo={this.state.loginInfo}
-              loginFormErrors={this.state.loginFormErrors}
-            />
-          </CardContent>
-        </Card>
-        <NotificationComponent
-          message="Invalid login or password, please type again"
-          show={this.state.showLoginFailedMsg}
-          onClose={() => this.setState({ showLoginFailedMsg: false })}
-        />
-      </>
-    );
-  }
-}
+  const { classes } = props;
 
-export const LoginPage = withSessionContext(
-  withStyles(styles)(withRouter<Props>(LoginPageInner))
-);
+  return (
+    <>
+      <Card className={classes.card}>
+        <CardHeader title={t("login")} />
+        <CardContent>
+          <LoginForm
+            onLogin={onLogin}
+            onUpdateField={onUpdateLoginField}
+            loginInfo={loginInfo}
+            loginFormErrors={loginFormErrors}
+          />
+        </CardContent>
+      </Card>
+      <NotificationComponent
+        message={t("Invalid login or password, please type again")}
+        show={showLoginFailedMessage}
+        onClose={() => setShowLoginFailedMessage(false)}
+      />
+    </>
+  );
+};
+
+export const LoginPage = withStyles(styles)(withRouter<Props>(LoginPageInner));
