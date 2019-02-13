@@ -228,3 +228,111 @@ export const PageB = withSessionContext(PageBInner);
 
 - To wrap up this example let's translate the inline validation that appear below each
   input field.
+
+- In the _loginForm_ on each textFieldForm we are informing a friendly error message, instead
+  of using that, let's use the type of the validation error.
+
+_./src/pages/login/loginForm.tsx_
+
+```diff
+      <TextFieldForm
+        label="Name"
+        name="login"
+        value={loginInfo.login}
+        onChange={onUpdateField}
+-        error={loginFormErrors.login.errorMessage}
++        loginFormErrors.login.succeeded ? "" : loginFormErrors.login.type
+      />
+      <TextFieldForm
+        label="Password"
+        name="password"
+        value={loginInfo.password}
+        onChange={onUpdateField}
+-        error={loginFormErrors.password.errorMessage}
++        error={loginFormErrors.password.succeeded ? "" : loginFormErrors.password.type}
+      />
+```
+
+- Now if we run the application we will see just the type of the error being shown
+  (not very friendly).
+
+```bash
+npm start
+```
+
+- Let's add translation keys for that validation errors.
+
+_./src/i18n.ts_
+
+```diff
+const resources = {
+  en: {
+    translation: {
+      login: "Login",
+      "Invalid login or password, please type again":
+        "Invalid login or password, please type again",
+      "error, review the fields": "error, review the fields rrr",
+      "login plus username": "Usuario: {{username}}",
++      "REQUIRED": "Mandatory field",
+    }
+  },
+  es: {
+    translation: {
+      login: "Introduzca credenciales",
+      "Invalid login or password, please type again":
+        "Usuario o clave no validos, porfavor intentelo de nuevo",
+      "error, review the fields": "Error, revise los campos por favor",
+      "login plus username": "Usuario: {{username}}"
++      "REQUIRED": "Campo obligatorio",
+    }
+  }
+};
+```
+
+- Let's add i18n translator helper to _loginForm_, and properly translate the text.
+
+_./src/pages/login/loginForm.tsx_
+
+```diff
++ import { useTranslation } from "react-i18next";
+
+export const LoginForm = (props: Props) => {
++  const { t, i18n } = useTranslation();
+  const { onLogin, onUpdateField, loginInfo, loginFormErrors } = props;
+
+// (...)
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center"
+      }}
+    >
+      <TextFieldForm
+        label="Name"
+        name="login"
+        value={loginInfo.login}
+        onChange={onUpdateField}
+        error={
+-          loginFormErrors.login.succeeded ? "" : loginFormErrors.login.type
++          loginFormErrors.login.succeeded ? "" : t(loginFormErrors.login.type)
+
+        }
+      />
+      <TextFieldForm
+        label="Password"
+        name="password"
+        value={loginInfo.password}
+        onChange={onUpdateField}
+        error={
+          loginFormErrors.password.succeeded
+            ? ""
+-            : loginFormErrors.password.type
++            : t(loginFormErrors.password.type)
+        }
+      />
+```
+
+> Excercise: Could you add multilanguage support to the login button?

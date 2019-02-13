@@ -10,7 +10,8 @@ const resources = {
       "Invalid login or password, please type again":
         "Invalid login or password, please type again",
       "error, review the fields": "error, review the fields rrr",
-      "login plus username": "Usuario: {{username}}"
+      "login plus username": "Usuario: {{username}}",
+      REQUIRED: "Mandatory field"
     }
   },
   es: {
@@ -19,7 +20,8 @@ const resources = {
       "Invalid login or password, please type again":
         "Usuario o clave no validos, porfavor intentelo de nuevo",
       "error, review the fields": "Error, revise los campos por favor",
-      "login plus username": "Usuario: {{username}}"
+      "login plus username": "Usuario: {{username}}",
+      REQUIRED: "Campo obligatorio"
     }
   }
 };
