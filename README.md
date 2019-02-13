@@ -43,7 +43,7 @@ const resources = {
       login: "Login",
       "Invalid login or password, please type again":
         "Invalid login or password, please type again",
-        "error, review the fields": "error, review the fields",
+      "error, review the fields": "error, review the fields"
     }
   },
   es: {
@@ -51,7 +51,7 @@ const resources = {
       login: "Introduzca credenciales",
       "Invalid login or password, please type again":
         "Usuario o clave no validos, porfavor intentelo de nuevo",
-        "error, review the fields": "Error, revise los campos por favor",
+      "error, review the fields": "Error, revise los campos por favor"
     }
   }
 };
@@ -127,6 +127,9 @@ const LoginPageInner = (props: Props) => {
 };
 ```
 
+> If you are using class based components react i18next exposes an HOC for you to
+> get access to _t_.
+
 - So far so good, let's check now how can we add multilanguage support to a literal that
   is injected via javascript.
 
@@ -149,3 +152,79 @@ _./src/pages/login/loginPage.tsx_
     });
   };
 ```
+
+That was nice, let's give a try now to interpolation, in pageB we are showing a message
+like:
+
+```
+<h3>Login: {props.login}</h3>
+```
+
+We don't need to concatenate translated strings, we can directly include the variables
+in the string.
+
+- Let's define the entry in the our root _i18next.ts_ file.
+
+_./src/i18n.ts_
+
+```diff
+const resources = {
+  en: {
+    translation: {
+      login: "Login",
+      "Invalid login or password, please type again":
+        "Invalid login or password, please type again",
+      "error, review the fields": "error, review the fields rrr",
++           "login plus username": "Usuario: {{username}}"
+
+    }
+  },
+  es: {
+    translation: {
+      login: "Introduzca credenciales",
+      "Invalid login or password, please type again":
+        "Usuario o clave no validos, porfavor intentelo de nuevo",
+      "error, review the fields": "Error, revise los campos por favor",
++     "login plus username": "Usuario: {username}",
+    }
+  }
+};
+```
+
+> To reach this page you have to enter as valid username and password keys _admin_ and _test_
+
+- Let's use this on the _pageB_
+
+_./src/pages/b/pageB.tsx_
+
+```diff
+import * as React from "react"
+import { Link } from 'react-router-dom';
+import { SessionContext, withSessionContext } from '../../common/'
++ import { useTranslation } from 'react-i18next';
+
+
+interface Props {
+  login : string;
+}
+
+- const PageBInner = (props : Props) =>
++ const PageBInner = (props : Props) => {
++   const { t, i18n } = useTranslation();
++   return (
+    <>
+      <h2>Hello from page B</h2>
+      <br />
+      <br />
+-      <h3>Login: {props.login}</h3>
++      <h3>t({login plus username}, {username: props.login})</h3>
+    <Link to="/">Navigate to Login</Link>
+   </>
++ )
++ }
+
+export const PageB = withSessionContext(PageBInner);
+```
+
+- To wrap up this example let's translate the inline validation that appear below each
+  input field.
