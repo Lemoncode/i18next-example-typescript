@@ -1,0 +1,6 @@
+{
+  "login": "Login",
+  "Invalid login or password, please type again": "Invalid login or password, please type again",
+  "error, review the fields": "error, review the fields rrr",
+  "login plus username": "Usuario: {{username}}"
+}
