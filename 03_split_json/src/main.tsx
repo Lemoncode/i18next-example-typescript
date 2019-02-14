@@ -6,6 +6,7 @@ import { LoginPage } from "./pages/login";
 import { PageB } from "./pages/b";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import { SessionProvider } from "./common";
+import { Suspense } from "react";
 
 const theme = createMuiTheme({
   typography: {
@@ -14,15 +15,17 @@ const theme = createMuiTheme({
 });
 
 ReactDOM.render(
-  <MuiThemeProvider theme={theme}>
-    <SessionProvider>
-      <HashRouter>
-        <Switch>
-          <Route exact={true} path="/" component={LoginPage} />
-          <Route path="/pageB" component={PageB} />
-        </Switch>
-      </HashRouter>
-    </SessionProvider>
-  </MuiThemeProvider>,
+  <Suspense fallback={<div>Loading...</div>}>
+    <MuiThemeProvider theme={theme}>
+      <SessionProvider>
+        <HashRouter>
+          <Switch>
+            <Route exact={true} path="/" component={LoginPage} />
+            <Route path="/pageB" component={PageB} />
+          </Switch>
+        </HashRouter>
+      </SessionProvider>
+    </MuiThemeProvider>
+  </Suspense>,
   document.getElementById("root")
 );
