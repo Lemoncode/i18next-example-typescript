@@ -25,15 +25,11 @@ _./src/locales/en/en.json_
 
 ```json
 {
-  "en": {
-    "translation": {
-      "login": "Login",
-      "Invalid login or password, please type again": "Invalid login or password, please type again",
-      "error, review the fields": "error, review the fields rrr",
-      "login plus username": "Usuario: {{username}}",
-      "REQUIRED": "Mandatory field"
-    }
-  }
+  "login": "Login",
+  "Invalid login or password, please type again": "Invalid login or password, please type again",
+  "error, review the fields": "error, review the fields rrr",
+  "login plus username": "Usuario: {{username}}",
+  "REQUIRED": "Mandatory field"
 }
 ```
 
@@ -41,15 +37,11 @@ _./src/locale/es/es.json_
 
 ```json
 {
-  "es": {
-    "translation": {
-      "login": "Introduzca credenciales",
-      "Invalid login or password, please type again": "Usuario o clave no validos, porfavor intentelo de nuevo",
-      "error, review the fields": "Error, revise los campos por favor",
-      "login plus username": "Usuario: {{username}}",
-      "REQUIRED": "Campo obligatorio"
-    }
-  }
+  "login": "Introduzca credenciales",
+  "Invalid login or password, please type again": "Usuario o clave no validos, porfavor intentelo de nuevo",
+  "error, review the fields": "Error, revise los campos por favor",
+  "login plus username": "Usuario: {{username}}",
+  "REQUIRED": "Campo obligatorio"
 }
 ```
 
@@ -145,7 +137,11 @@ i18n
     lng: "es",
 
     keySeparator: false, // we do not use keys in form messages.welcome
-
++    fallbackLng: 'es' || 'en',
++    load: 'currentOnly',
++    react: {
++      wait: true,
++    },
     interpolation: {
       escapeValue: false // react already safes from xss
     },
@@ -155,13 +151,40 @@ i18n
   });
 
 export default i18n;
+```
 
+> If something break, you can consider adding _debug: true_ to your
+> _init_ section.
+
+- Before giving a try let's suspend our react app meanwhile the
+  resource json is being loaded and display a _loading..._ message.
+
+_./src/main.tsx_
+
+```diff
++ import { Suspense } from "react";
+
+// (...)
+
+ReactDOM.render(
++  <Suspense fallback={<div>Loading...</div>}>
+    <MuiThemeProvider theme={theme}>
+      <SessionProvider>
+        <HashRouter>
+          <Switch>
+            <Route exact={true} path="/" component={LoginPage} />
+            <Route path="/pageB" component={PageB} />
+          </Switch>
+        </HashRouter>
+      </SessionProvider>
+    </MuiThemeProvider>
++  </Suspense>,
+  document.getElementById("root")
+);
 ```
 
 - Let's give a try.
 
-\*\*\* WIP
-
-https://www.i18next.com/how-to/add-or-load-translations
-
-https://github.com/i18next/i18next-xhr-backend
+```bash
+npm start
+```

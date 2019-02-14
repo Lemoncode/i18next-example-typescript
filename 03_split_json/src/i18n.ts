@@ -7,11 +7,9 @@ i18n
   .use(XHR)
   .init({
     lng: "es",
-
     keySeparator: false, // we do not use keys in form messages.welcome
     fallbackLng: 'es' || 'en',
     load: 'currentOnly',
-    debug: true,
     react: {
       wait: true,
     },
