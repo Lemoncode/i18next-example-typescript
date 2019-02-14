@@ -21,7 +21,7 @@ npm install
 
 * We are going to split the translation files into two json files.
 
-_./src/locales/en/en.json_
+_./src/locales/en.json_
 
 ```json
 {
@@ -33,7 +33,7 @@ _./src/locales/en/en.json_
 }
 ```
 
-_./src/locale/es/es.json_
+_./src/locales/es.json_
 
 ```json
 {
@@ -61,9 +61,16 @@ _./webpack.config.json_
 
 Require the plugin on top of the file.
 
+_./webpack.config.json_
+
 ```javascript
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 ```
+
+Let's configure the plugin
+
+_./webpack.config.json_
+
 
 ```diff
   plugins: [
@@ -135,8 +142,6 @@ i18n
   .init({
 -    resources,
     lng: "es",
-
-    keySeparator: false, // we do not use keys in form messages.welcome
 +    fallbackLng: 'es' || 'en',
 +    load: 'currentOnly',
 +    react: {
