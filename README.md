@@ -14,10 +14,17 @@ About folder structure:
 
 - 00_start: Starting point (no multilanguage).
 
-- 01_implementation: application supporting mulilanguage (english / spanish).
+- 01_basic_translastion: application supporting mulilanguage (english / spanish).
 
-- Readme.md: This file, includes and step by step guide to go from 00_start to 01_implementation, part of this
-  guide follows: https://react.i18next.com/guides/quick-start.
+- 02_change_language: added tu buttons to change the preffered language on the fly.
+
+Each project (except 00 start) includes in its subfolder a Readme.md file with an step
+by step guide to reproduce it.
+
+
+# Additional resources:
+
+Official React Guide: https://react.i18next.com/guides/quick-start.
 
 # Steps
 

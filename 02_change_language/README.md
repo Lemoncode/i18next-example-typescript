@@ -1,5 +1,7 @@
 # Change Language
 
+In this sample we are will add two buttons to allow the user change the preffered language
+(spanish / english) on the fly.
 
 # Steps
 
