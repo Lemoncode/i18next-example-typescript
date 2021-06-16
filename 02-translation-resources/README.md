@@ -21,7 +21,8 @@ _locales/es/common.json_
 ```json
 {
   "buttons": {
-    "ok": "Aceptar"
+    "ok": "Aceptar",
+    "cancel": "Cancelar"
   }
 }
 ```

@@ -118,7 +118,7 @@ ReactDOM.render(
 );
 ```
 
-- ¡Ya estamos listos para utilizar nuestras traducciones!:
+- ¡Ya estamos listos para soportar idiomas en nuestra aplicación! Para eso utilizaremos el _hook_ `useTranslation` de _react-i18next_ y su función `t`, como en el siguiente ejemplo:
 
 ```diff
 import React from "react";
@@ -137,6 +137,8 @@ export const App = () => {
 +  );
 };
 ```
+
+Podemos llamar al hook de `useTranslation` con el namespace que queremos utilizar (en este caso la página de _Hello_), o indicar el _namespace_ al llamar a la función `t` (como en el ejemplo para obtener el literal del botón OK).
 
 - Podemos comprobar el saludo de "Bienvenido" al arrancar nuestro proyecto:
 
