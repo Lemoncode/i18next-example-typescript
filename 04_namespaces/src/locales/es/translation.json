@@ -1,6 +1,0 @@
-{
-  "login": "Introduzca credenciales",
-  "Invalid login or password, please type again": "Usuario o clave no validos, porfavor intentelo de nuevo",
-  "error, review the fields": "Error, revise los campos por favor",
-  "login plus username": "Usuario: {{username}}"
-}
