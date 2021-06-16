@@ -16,7 +16,7 @@ Sobre la estructura de carpetas de este repositorio:
 - 02-translation-resources: separar las traducciones como resources en ficheros _.json_ para cargarlos bajo demanda
 - 03-change-language: seleccionar y cambiar el idioma en el que se muestra la aplicación
 
-Cada carpeta incluye un fichero _Readme.md_ con la guía _paso por paso_ para reproducir el ejemplo.
+Cada carpeta incluye un fichero _Readme.md_ con la guía _paso a paso_ para reproducir el ejemplo.
 
 # Recursos adicionales:
 
